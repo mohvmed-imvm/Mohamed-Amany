@@ -1,25 +1,28 @@
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import "./App.css";
 
 const CONFIG = {
   callerName: "Ahmed",
   subtitle: "incoming love call",
-  password: "1562005",
+  password: "2711",
   photos: [
     "/public/photo2.jpg",
     "/public/photo3.jpg",
     "/public/photo4.jpg",
+    "/public/photo5.jpg",
+    "/public/photo6.jpg",
+    "/public/photo7.jpg",
   ],
   message:
-    "انتي مش عارفة أنا بحبك قد إيه بجد، ومش عارف حتى أبدأ كلامي منين ولا أوصفلك إيه ولا إيه، بس كل اللي أعرفه إنك بقيتي بالنسبالي حاجة كبيرة أوي، بقيتي جزء من يومي وتفكيري وكل تفصيلة في حياتي، بقيت أحب أسمع صوتك وأتكلم معاكي حتى لو مفيش كلام يتقال، مجرد وجودك معايا بيخليني مبسوط وبيهون عليا حاجات كتير أوي، بحب ضحكتك وهزارك ودلعك وطريقتك في الكلام وحتى خناقنا بحبها عشان في الآخر برجع ألاقي نفسي مش عايز غير إني أصالحك وأشوفك مبسوطة، انتي بالنسبالي مش مجرد واحدة بحبها، انتي الشخص اللي نفسي أحكيله كل حاجة بتحصل معايا، أول واحدة تيجي في بالي لما أفرح وأول واحدة نفسي تكون جنبي لما أكون مخنوق، نفسي أفضل معاكي وأعيش معاكي تفاصيل كتير أوي، نكبر سوا ونحقق أحلامنا ونفضل فاكرين كل لحظة حلوة عشناها، وصدقيني أنا مش مستني منك تكوني مثالية ولا عمري طلبت منك كده، أنا بحبك بكل تفاصيلك وبكل حالاتك، بحبك وإنتي فرحانة وزعلانة ومتنرفزة وبتتدلعي، ومهما حصل بينا مش عايزك تشكي لحظة إن ليكي مكانة كبيرة أوي عندي، أنا ممكن معرفش أعبر كل يوم عن اللي جوايا وممكن ساعات كلامي ميكونش كفاية، بس والله انتي غالية عندي بطريقة متتوصفش، وكل يوم بيعدي بحس إني متعلق بيكي أكتر، ونفسي أفضل الشخص اللي تلاقيه جنبك وقت ما تحتاجيه، واللي يطمنك ويضحكك ويخليكي حاسة إنك محبوبة ومهمة، أنا مش عايز من الدنيا غير إننا نفضل مع بعض ونفضل نختار بعض كل يوم، عشان أنا لما حبيتك مكنتش بدور على فترة حلوة وخلاص، أنا حبيت واحدة نفسي تكمل معايا العمر كله، وبجد يا أجمل حاجة حصلتلي أنا بحبك أوي أوي ومهما أقولك مش هعرف أوصلك حتى جزء صغير من اللي جوايا ليكي ❤️❤️",
+    "سنة جديدة بتبدأ في عمرك، ويارب تعقل بقا 😂🤦🏻‍♀️❣️ بدعي ربنا من كل قلبي إنها تكون مليانة فرح ونجاح وراحة بال، وإن ربنا يحقق لك كل أحلامك ويجعلني دايماً سبب في سعادتك زي ما أنت سبب في سعادتي. من يوم ما دخلت حياتي وأنا حاسة إن الدنيا كلها بتضحكلي، وجودك جنبي بيهوّن عليا أي تعب وبيديني طاقة وأمان مالهمش حدود❣️🫂 كل سنة وأنت طيب يا روح قلبي، وعقبال مليون سنة وإحنا مع بعض، إيدينا في إيد بعض، وبنكبر سوا على الحلوة والمرة. 🫂❣️ مهما اتكلم م هقدر اوصفلك معزتك او غلاوتك عندي قد اي 🥹❤️ كل سنه وانت قبل متبقي خطيبي وحبيبي انك ابويا وصحبي واخويا وكل حاجه ف الدنيا❤️ربنا يبعد عنك اي حاجه وحشه واشوفك احسن واسعد الناس  يروحي🫂❤️ وربنا يجمعنا في بيت واحد على خير ويديمك نعمة في حياتي طول العمر🫂❤️ يارب السنه دي تبقي احسن من سنين كتير فاتت ونحقق كل ال عايزنو سوا يحبيبي❤️❤️❤️ بحبك❣️",
 };
 
 const refusalMessages = [
-  "!ردي بقولك",
-  "بقول ردي",
-  "!!اخر مره هقولك ردي",
+  "!رد بقولك",
+  "بقول رد",
+  "!!اخر مره هقولك رد",
 ];
 
 function PhoneIcon({ type }) {
@@ -105,9 +108,24 @@ useEffect(() => {
     setRefusals((previous) => previous + 1);
   };
 
-  const answerCall = () => {
-    setScreen("passcode");
-  };
+const audioRef = useRef(null);
+
+const answerCall = () => {
+  setScreen("passcode");
+};
+
+const restart = () => {
+  if (audioRef.current) {
+    audioRef.current.pause();
+    audioRef.current.currentTime = 0;
+  }
+
+  setScreen("call");
+  setRefusals(0);
+  setDigits("");
+  setWrongPassword(false);
+  setSelectedPhoto(null);
+};
 
 
 const pressDigit = (digit) => {
@@ -120,14 +138,12 @@ const pressDigit = (digit) => {
   setWrongPassword(false);
 
   if (next.length === passwordLength) {
-    if (next === CONFIG.password) {
-      window.setTimeout(() => setScreen("home"), 350);
-    } else {
-      window.setTimeout(() => {
-        setDigits("");
-        setWrongPassword(true);
-      }, 350);
-    }
+if (next === CONFIG.password) {
+  window.setTimeout(() => {
+    setScreen("home");
+    audioRef.current?.play().catch(console.error);
+  }, 350);
+}
   }
 };
 
@@ -137,16 +153,9 @@ const pressDigit = (digit) => {
     setWrongPassword(false);
   };
 
-  const restart = () => {
-    setScreen("call");
-    setRefusals(0);
-    setDigits("");
-    setWrongPassword(false);
-    setSelectedPhoto(null);
-  };
-
   return (
     <main className="experience">
+      <audio ref={audioRef} src="/song.mp3" preload="auto" />
       <FloatingHearts />
 
       <div className="ambient ambient-a" />
@@ -340,7 +349,7 @@ const pressDigit = (digit) => {
                             transition={{ duration: 0.3 }}
                           >
                             {refusals === 0
-                              ? "!ردي"
+                              ? "!رد"
                               : refusalMessages[
                                   Math.min(refusals - 1, refusalMessages.length - 1)
                                 ]}
